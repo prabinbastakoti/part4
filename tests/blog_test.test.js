@@ -6,6 +6,8 @@ const api = supertest(app);
 
 const Blog = require('../models/blog');
 
+mongoose.set('bufferTimeoutMS', 300000);
+
 const initialBlogs = [
   {
     title: 'This is title1',
@@ -40,6 +42,13 @@ test('returns the correct amount of blog posts', async () => {
   const response = await api.get('/api/blogs');
   expect(response.body).toHaveLength(initialBlogs.length);
 }, 100000);
+
+test('unique identifier property of the blog posts is named id', async () => {
+  const response = await api.get('/api/blogs');
+  response.body.forEach((blog) => {
+    expect(blog.id).toBeDefined();
+  });
+});
 
 afterAll(async () => {
   await mongoose.connection.close();
