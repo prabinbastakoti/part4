@@ -4,11 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "test": "jest --verbose"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "jest": "^29.6.4",
     "nodemon": "^3.0.1"
   },
   "dependencies": {
@@ -16,5 +18,8 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "mongoose": "^7.5.0"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
