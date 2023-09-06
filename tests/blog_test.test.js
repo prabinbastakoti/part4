@@ -50,6 +50,54 @@ test('unique identifier property of the blog posts is named id', async () => {
   });
 });
 
+test('successfully creates a blog', async () => {
+  const newBlog = {
+    title: 'This is title3',
+    author: 'This is author3',
+    url: 'This is URL3',
+    likes: 300,
+  };
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  const response = await api.get('/api/blogs');
+
+  expect(response.body).toHaveLength(initialBlogs.length + 1);
+});
+
+test('if the likes property is missing from the request, it will default to the value 0.', async () => {
+  await Blog.deleteMany({});
+  const newBlog = {
+    title: 'This is Title',
+    author: 'This is Author',
+    url: 'This is URL',
+  };
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  const response = await api.get('/api/blogs');
+
+  expect(response.body[0].likes).toBe(0);
+});
+
+test('if the title or url properties are missing from the request data, status code 400', async () => {
+  await Blog.deleteMany({});
+  const newBlog = {
+    author: 'This is Author',
+    likes: 69,
+  };
+
+  await api.post('/api/blogs').send(newBlog).expect(400);
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
 });
