@@ -6,8 +6,24 @@ POST http://localhost:3003/api/blogs
 content-type: application/json
 
 {
-    "title": "This is title3",
-    "author": "This is author3",
-    "url": "This is URL3",
-    "likes": 300
+    "title": "This is title4",
+    "author": "This is author4",
+    "url": "This is URL4",
+    "likes": 400
+}
+
+###
+
+DELETE http://localhost:3003/api/blogs/64f823308eb0e59692836c07
+
+### 
+
+PUT http://localhost:3003/api/blogs/64f76999c5f02d2ebbf73d66
+content-type : application/json
+
+{
+    "title": "This is title2",
+    "author": "This is author2",
+    "url": "This is URL2",
+    "likes": 500
 }

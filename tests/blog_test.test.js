@@ -31,71 +31,116 @@ beforeEach(async () => {
   await blogObject.save();
 }, 100000);
 
-test('blogs are returned as json', async () => {
-  await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/);
-}, 100000);
+describe('When there is initially some blogs saved', () => {
+  test('blogs are returned as json', async () => {
+    await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+  }, 100000);
 
-test('returns the correct amount of blog posts', async () => {
-  const response = await api.get('/api/blogs');
-  expect(response.body).toHaveLength(initialBlogs.length);
-}, 100000);
+  test('returns the correct amount of blog posts', async () => {
+    const response = await api.get('/api/blogs');
+    expect(response.body).toHaveLength(initialBlogs.length);
+  }, 100000);
 
-test('unique identifier property of the blog posts is named id', async () => {
-  const response = await api.get('/api/blogs');
-  response.body.forEach((blog) => {
-    expect(blog.id).toBeDefined();
+  test('unique identifier property of the blog posts is named id', async () => {
+    const response = await api.get('/api/blogs');
+    response.body.forEach((blog) => {
+      expect(blog.id).toBeDefined();
+    });
   });
 });
 
-test('successfully creates a blog', async () => {
-  const newBlog = {
-    title: 'This is title3',
-    author: 'This is author3',
-    url: 'This is URL3',
-    likes: 300,
-  };
+describe('Addition of a new blog', () => {
+  test('successfully creates a blog', async () => {
+    const newBlog = {
+      title: 'This is title3',
+      author: 'This is author3',
+      url: 'This is URL3',
+      likes: 300,
+    };
 
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(201)
-    .expect('Content-Type', /application\/json/);
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
 
-  const response = await api.get('/api/blogs');
+    const response = await api.get('/api/blogs');
 
-  expect(response.body).toHaveLength(initialBlogs.length + 1);
+    expect(response.body).toHaveLength(initialBlogs.length + 1);
+  });
+
+  test('if the likes property is missing from the request, it will default to the value 0.', async () => {
+    await Blog.deleteMany({});
+    const newBlog = {
+      title: 'This is Title',
+      author: 'This is Author',
+      url: 'This is URL',
+    };
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    const response = await api.get('/api/blogs');
+
+    expect(response.body[0].likes).toBe(0);
+  });
+
+  test('if the title or url properties are missing from the request data, status code 400', async () => {
+    await Blog.deleteMany({});
+    const newBlog = {
+      author: 'This is Author',
+      likes: 69,
+    };
+
+    await api.post('/api/blogs').send(newBlog).expect(400);
+  });
 });
 
-test('if the likes property is missing from the request, it will default to the value 0.', async () => {
-  await Blog.deleteMany({});
-  const newBlog = {
-    title: 'This is Title',
-    author: 'This is Author',
-    url: 'This is URL',
-  };
+describe('Deletion of a blog post', () => {
+  test('succeeds with status code 204 if id is valid', async () => {
+    const blogAtStart = await Blog.find({});
+    const blogToDelete = blogAtStart[0];
 
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(201)
-    .expect('Content-Type', /application\/json/);
+    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
 
-  const response = await api.get('/api/blogs');
+    const blogAtEnd = await Blog.find({});
 
-  expect(response.body[0].likes).toBe(0);
+    expect(blogAtEnd).toHaveLength(initialBlogs.length - 1);
+
+    const title = blogAtEnd.map((t) => t.title);
+
+    expect(title).not.toContain(blogToDelete.title);
+  });
 });
 
-test('if the title or url properties are missing from the request data, status code 400', async () => {
-  await Blog.deleteMany({});
-  const newBlog = {
-    author: 'This is Author',
-    likes: 69,
-  };
+describe('Update a blog Post', () => {
+  test('successfully updates a blog post', async () => {
+    const blogAtStart = await Blog.find({});
+    const blogToUpdate = blogAtStart[0];
 
-  await api.post('/api/blogs').send(newBlog).expect(400);
+    const newBlog = {
+      title: 'This is title1',
+      author: 'This is author1',
+      url: 'This is URL1',
+      likes: 500,
+    };
+
+    const response = await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(newBlog);
+    const blogAtEnd = await Blog.find({});
+
+    expect(blogAtEnd).toHaveLength(initialBlogs.length);
+
+    const updatedBlogLikes = blogAtEnd[0].likes;
+    expect(updatedBlogLikes).toBe(500);
+  });
 });
 
 afterAll(async () => {
