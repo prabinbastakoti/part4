@@ -27,3 +27,17 @@ content-type : application/json
     "url": "This is URL2",
     "likes": 500
 }
+
+### 
+POST http://localhost:3003/api/user
+content-type: application/json
+
+{
+    "username":"port2",
+    "name":"port2",
+    "password":"port2"
+}
+
+
+###
+GET http://localhost:3003/api/user
