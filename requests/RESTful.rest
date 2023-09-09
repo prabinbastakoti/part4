@@ -33,9 +33,9 @@ POST http://localhost:3003/api/user
 content-type: application/json
 
 {
-    "username":"port2",
-    "name":"port2",
-    "password":"port2"
+    "username":"prabinbastakoti",
+    "name":"Prabin Bastakoti",
+    "password":"acerswift3"
 }
 
 
@@ -49,15 +49,15 @@ POST http://localhost:3003/api/login
 content-type: application/json
 
 {
-    "username":"port3",
-    "password":"port3"
+    "username":"prabinbastakoti",
+    "password":"acerswift3"
 }
 
 
 ###
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBvcnQzIiwiaWQiOiI2NGZiMmY1MTllNDFiODY2NDI2ZmI2MDkiLCJpYXQiOjE2OTQyMzY1ODJ9.G4yoQnMrlt6h55ISHFWK2X2swSVluqJJnjl_2btWrFI
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InByYWJpbmJhc3Rha290aSIsImlkIjoiNjRmYzJiYTlmOTkzYjdhOTNhMDgwNTUwIiwiaWF0IjoxNjk0MjQ3ODg1fQ.NDvc_bLvTA91RuHJTT6aIDHK_2fuxufN9JNDFAYcBzg
 
 {
     "title":"single page app use token Authorization",
@@ -65,3 +65,7 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBvc
     "url":"Url for blog",
     "likes":400
 }
+
+### 
+DELETE http://localhost:3003/api/blogs/64fc0f13ae30dd05df4c2c05
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBvcnQzIiwiaWQiOiI2NGZiMmY1MTllNDFiODY2NDI2ZmI2MDkiLCJpYXQiOjE2OTQyMzY1ODJ9.G4yoQnMrlt6h55ISHFWK2X2swSVluqJJnjl_2btWrFI
