@@ -41,3 +41,27 @@ content-type: application/json
 
 ###
 GET http://localhost:3003/api/user
+
+
+
+### 
+POST http://localhost:3003/api/login
+content-type: application/json
+
+{
+    "username":"port3",
+    "password":"port3"
+}
+
+
+###
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBvcnQzIiwiaWQiOiI2NGZiMmY1MTllNDFiODY2NDI2ZmI2MDkiLCJpYXQiOjE2OTQyMzY1ODJ9.G4yoQnMrlt6h55ISHFWK2X2swSVluqJJnjl_2btWrFI
+
+{
+    "title":"single page app use token Authorization",
+    "author":"Prabin Bastakoti",
+    "url":"Url for blog",
+    "likes":400
+}
