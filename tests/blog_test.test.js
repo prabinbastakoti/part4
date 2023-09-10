@@ -5,6 +5,7 @@ const app = require('../app');
 const api = supertest(app);
 
 const Blog = require('../models/blog');
+const User = require('../models/user');
 
 mongoose.set('bufferTimeoutMS', 300000);
 
@@ -25,6 +26,14 @@ const initialBlogs = [
 
 beforeEach(async () => {
   await Blog.deleteMany({});
+  await User.deleteMany({});
+  const user = {
+    username: 'prabinbastakoti',
+    name: 'Prabin Bastakoti',
+    password: 'acerswift3',
+  };
+  await api.post('/api/user').send(user);
+
   let blogObject = new Blog(initialBlogs[0]);
   await blogObject.save();
   blogObject = new Blog(initialBlogs[1]);
@@ -54,6 +63,11 @@ describe('When there is initially some blogs saved', () => {
 
 describe('Addition of a new blog', () => {
   test('successfully creates a blog', async () => {
+    const token = await api.post('/api/login').send({
+      username: 'prabinbastakoti',
+      password: 'acerswift3',
+    });
+
     const newBlog = {
       title: 'This is title3',
       author: 'This is author3',
@@ -64,6 +78,7 @@ describe('Addition of a new blog', () => {
     await api
       .post('/api/blogs')
       .send(newBlog)
+      .set({ Authorization: 'bearer ' + token.body.token })
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
@@ -74,6 +89,10 @@ describe('Addition of a new blog', () => {
 
   test('if the likes property is missing from the request, it will default to the value 0.', async () => {
     await Blog.deleteMany({});
+    const token = await api.post('/api/login').send({
+      username: 'prabinbastakoti',
+      password: 'acerswift3',
+    });
     const newBlog = {
       title: 'This is Title',
       author: 'This is Author',
@@ -83,6 +102,7 @@ describe('Addition of a new blog', () => {
     await api
       .post('/api/blogs')
       .send(newBlog)
+      .set({ Authorization: 'bearer ' + token.body.token })
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
@@ -93,21 +113,50 @@ describe('Addition of a new blog', () => {
 
   test('if the title or url properties are missing from the request data, status code 400', async () => {
     await Blog.deleteMany({});
+
+    const token = await api.post('/api/login').send({
+      username: 'prabinbastakoti',
+      password: 'acerswift3',
+    });
+
     const newBlog = {
       author: 'This is Author',
       likes: 69,
     };
 
-    await api.post('/api/blogs').send(newBlog).expect(400);
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .set({ Authorization: 'bearer ' + token.body.token })
+      .expect(400);
   });
 });
 
 describe('Deletion of a blog post', () => {
   test('succeeds with status code 204 if id is valid', async () => {
+    await Blog.deleteMany({});
+
+    const token = await api.post('/api/login').send({
+      username: 'prabinbastakoti',
+      password: 'acerswift3',
+    });
+
+    await api
+      .post('/api/blogs')
+      .send(initialBlogs[0])
+      .set({ Authorization: 'bearer ' + token.body.token });
+    await api
+      .post('/api/blogs')
+      .send(initialBlogs[1])
+      .set({ Authorization: 'bearer ' + token.body.token });
+
     const blogAtStart = await Blog.find({});
     const blogToDelete = blogAtStart[0];
 
-    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .set({ Authorization: 'bearer ' + token.body.token })
+      .expect(204);
 
     const blogAtEnd = await Blog.find({});
 

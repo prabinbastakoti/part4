@@ -13,21 +13,21 @@ blogRouter.get('/', async (request, response) => {
 });
 
 blogRouter.post('/', middleware.userExtractor, async (request, response) => {
-  const blog = request.body;
+  const { title, author, url } = request.body;
 
   const user = request.user;
 
-  const newBlog = new Blog({
-    ...blog,
-    user: user.id,
-  });
-
-  if (!blog.likes) {
-    blog.likes = 0;
-  }
-  if (!blog.title || !blog.url) {
+  if (!title || !url) {
     return response.status(400).send({ error: 'Title or URL is missing' });
   }
+
+  const newBlog = new Blog({
+    title,
+    author,
+    url,
+    likes: request.body.likes ? request.body.likes : 0,
+    user: user.id,
+  });
 
   const result = await newBlog.save();
 
