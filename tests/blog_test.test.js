@@ -130,6 +130,17 @@ describe('Addition of a new blog', () => {
       .set({ Authorization: 'bearer ' + token.body.token })
       .expect(400);
   });
+
+  test('if token is not provided , 401 unauthorized', async () => {
+    const newBlog = {
+      title: 'This is title3',
+      author: 'This is author3',
+      url: 'This is URL3',
+      likes: 300,
+    };
+
+    await api.post('/api/blogs').send(newBlog).expect(401);
+  });
 });
 
 describe('Deletion of a blog post', () => {
@@ -165,6 +176,28 @@ describe('Deletion of a blog post', () => {
     const title = blogAtEnd.map((t) => t.title);
 
     expect(title).not.toContain(blogToDelete.title);
+  });
+  test('if token is not provided , 401 unauthorized', async () => {
+    await Blog.deleteMany({});
+
+    const token = await api.post('/api/login').send({
+      username: 'prabinbastakoti',
+      password: 'acerswift3',
+    });
+
+    await api
+      .post('/api/blogs')
+      .send(initialBlogs[0])
+      .set({ Authorization: 'bearer ' + token.body.token });
+    await api
+      .post('/api/blogs')
+      .send(initialBlogs[1])
+      .set({ Authorization: 'bearer ' + token.body.token });
+
+    const blogAtStart = await Blog.find({});
+    const blogToDelete = blogAtStart[0];
+
+    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(401);
   });
 });
 
