@@ -1,6 +1,4 @@
-GET http://localhost:3003/api/blogs
 
-### 
 
 POST http://localhost:3003/api/blogs
 content-type: application/json
@@ -18,7 +16,7 @@ DELETE http://localhost:3003/api/blogs/64f823308eb0e59692836c07
 
 ### 
 
-PUT http://localhost:3003/api/blogs/64f76999c5f02d2ebbf73d66
+PUT http://localhost:3003/api/blogs/64fee05acd6c6620fa3a7cf2
 content-type : application/json
 
 {
@@ -67,5 +65,9 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InByY
 }
 
 ### 
-DELETE http://localhost:3003/api/blogs/64fc3cdc5d4c17033569d1e5
+DELETE http://localhost:3003/api/blogs/64fec392cd6c6620fa3a7cc0
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InByYWJpbmJhc3Rha290aSIsImlkIjoiNjRmYzJiYTlmOTkzYjdhOTNhMDgwNTUwIiwiaWF0IjoxNjk0MjQ3ODg1fQ.NDvc_bLvTA91RuHJTT6aIDHK_2fuxufN9JNDFAYcBzg
+
+
+###
+GET http://localhost:3003/api/blogs
